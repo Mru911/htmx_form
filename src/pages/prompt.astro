@@ -1,5 +1,5 @@
 ---
-// import { getRequest, startRequest } from "../request";
+import { getRequest, startRequest } from "../request.ts";
 
 let requestId = "";
 if (Astro.request.method === "POST") {
@@ -9,19 +9,18 @@ let prompt = "";
 if (promptValue !== null) {
   prompt = promptValue.toString();
 }
-//   requestId = await startRequest(prompt);
-// } else {
-//   requestId = Astro.url.searchParams.get("requestId");
-// }
-// const request = getRequest(requestId);
- ---
+requestId = await startRequest(prompt);
+} else {
+    requestId = Astro.url.searchParams.get("requestId");
+}
+const request = getRequest(requestId);
+ 
 
 <div
-hx-get={`/prompt?requestId=${requestId}`}
+  hx-get={`/prompt?requestId=${requestId}`}
   hx-target="#result"
-  hx-trigger= "load delay:50ms" 
-
+  hx-trigger={request.pending ? "load delay:50ms" : ""}
   class="italic"
 >
-  <span>{prompt}</span>
+  <span>{request.completion}</span>
 </div>
